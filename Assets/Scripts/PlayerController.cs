@@ -9,16 +9,17 @@ public class PlayerController : MonoBehaviour
     public GameObject laser, laserSpawn;
     public float fireRate = 0.25f;
 
+    private Rigidbody2D rBody;
     private float timer = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        rBody = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    // Used for physics
+    void FixedUpdate()
     {
         float horiz, vert;
 
@@ -28,18 +29,22 @@ public class PlayerController : MonoBehaviour
         // Debug.Log("H: " + horiz + ", V: " + vert);
 
         Vector2 newVelocity = new Vector2(horiz, vert);
-        GetComponent<Rigidbody2D>().velocity = newVelocity * speed;
+        rBody.velocity = newVelocity * speed;
 
         // Restrict the player from leaving the play area
         float newX, newY;
 
-        newX = Mathf.Clamp(GetComponent<Rigidbody2D>().position.x, minX, maxX); 
-        newY = Mathf.Clamp(GetComponent<Rigidbody2D>().position.y, minY, maxY);
+        newX = Mathf.Clamp(rBody.position.x, minX, maxX);
+        newY = Mathf.Clamp(rBody.position.y, minY, maxY);
 
-        Debug.Log("Clamped X: " + newX + " Clamped Y: " + newY);
+        // Debug.Log("Clamped X: " + newX + " Clamped Y: " + newY);
 
-        GetComponent<Rigidbody2D>().position = new Vector2(newX, newY);
+        rBody.position = new Vector2(newX, newY);
+    }
 
+    // Update is called once per frame
+    void Update()
+    {
         // Add laser fire code
         // Check if the "Fire1" button is pressed
         if(Input.GetAxis("Fire1") > 0 && timer > fireRate) 
